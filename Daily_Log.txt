@@ -1,0 +1,11 @@
+Day - 1 (1-April-2026)
+
+Created Data Generator class and made a Non_Linear Data Generator Function.
+-> In future we will take parameter called 'num_of_features' and then create feautres. 
+
+Created Polynomial Basis Function.
+-> Need to write Gaussian Basis aswell
+
+Day - 2 (2-April-2026)
+
+Created plot() function in DataGenerator class
