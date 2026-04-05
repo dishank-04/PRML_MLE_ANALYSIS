@@ -7,5 +7,9 @@ Created Polynomial Basis Function.
 -> Need to write Gaussian Basis aswell
 
 Day - 2 (2-April-2026)
-
 Created plot() function in DataGenerator class
+
+
+Day - 3 (3-April-2026) 
+Coded closed form solution to calculate weights using normal equation, if matrix is singular then used pseduo inverse to calculate weights 
+

@@ -22,7 +22,7 @@ class PolynomialBasis:
         powers = np.arange(self.degree+1) # This will create [0, 1, ... self.degree+1] powers. Power 0 will create Bias column of all 1's.
 
         design_matrix = np.power(input_values, powers)
-        return design_matrix.shape
+        return design_matrix
     
 
 

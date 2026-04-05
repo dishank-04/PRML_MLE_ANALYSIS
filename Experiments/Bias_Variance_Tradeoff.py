@@ -1,6 +1,9 @@
 from src.data_generator import DataGenerator
+from src.basis_functions import PolynomialBasis
+from src.models import LinearModel
 
-data = DataGenerator(0.4, 80)
+data = DataGenerator(0.4, 5)
 X,t = data.Generate_Non_Linear_Data()
-print(X.shape)
-print(t.shape)
+model = LinearModel(3)
+model.fit(X,t)
+print(model.weights)
