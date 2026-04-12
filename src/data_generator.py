@@ -10,7 +10,10 @@ class DataGenerator:
         self.trueoutputVector = None
         self.noiseoutputVector = None
 
-    def Generate_Non_Linear_Data(self):
+    def standardizeData():
+        pass
+
+    def Generate_Non_Linear_Data(self, seed: int=None):
 
         ''' For analysis part we will be using Composite Sin function as our true function which is: sin*(2*pi*x) + 0.5*sin(10*pi*x)
 
@@ -20,10 +23,9 @@ class DataGenerator:
         input_values = np.linspace(0, 1, self.sampleSize)    
         true_output_values = np.sin(2*np.pi*input_values) + 0.5*np.sin(10*np.pi*input_values)
 
-        
-        np.random.seed(self.sampleSize) # This will help to keep our noise constant without changing the numbers everytime we run the code, helps with reproducability of data.
+        rng = np.random.default_rng(seed)
 
-        noise = np.random.normal(0, self.noise, self.sampleSize)
+        noise = rng.normal(0, self.noise, self.sampleSize)
 
         noise_added_outputs = true_output_values + noise
     
@@ -46,23 +48,20 @@ class DataGenerator:
         This will plot the DataPoints
         '''
 
-        if show_true_function == True:
+        if self.inputVector is None:
+                raise ValueError("Data has not been generated yet. Call Generate_Non_Linear_Data first.")
 
-            plt.scatter(self.inputVector, self.noiseoutputVector, color='navy', label='Data_Points')
-            plt.plot(self.inputVector, self.trueoutputVector, color='red', label='true_Function')
-            plt.xlabel('X_values')
-            plt.ylabel('t_values')
-            plt.title('Function is: sin*(2*pi*x) + 0.5*sin(10*pi*x)')
-            plt.legend()
-            plt.show()
         
-        else:
+        plt.scatter(self.inputVector, self.noiseoutputVector, color='navy', label='Data Points')
                 
-            plt.scatter(self.inputVector, self.noiseoutputVector, color='navy', label='Data_Points')
-            plt.xlabel('X_values')
-            plt.ylabel('t_values')
-            plt.legend()
-            plt.show()
+        if show_true_function:
+            plt.plot(self.inputVector, self.trueoutputVector, color='red', label='True Function')
+            plt.title('Function: sin(2*pi*x) + 0.5*sin(10*pi*x)')
+            
+        plt.xlabel('X_values')
+        plt.ylabel('t_values')
+        plt.legend()
+        plt.show()
 
         
 

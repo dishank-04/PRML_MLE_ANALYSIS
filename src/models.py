@@ -12,21 +12,11 @@ class LinearModel:
         basis = PolynomialBasis(self.basisFuncDegree)
         phi = basis.transform(X_training) # This will create Design Matrix of N x M
 
+        A = phi.T @ phi
+        b = phi.T @ t_training
 
-        try:
-            covariance_matrix = phi.T @ phi
-            weights = (np.linalg.inv(covariance_matrix)) @ phi.T @ t_training
+        self.weights = np.linalg.solve(A, b) # Not using np.linalg.inv to solve for optimal weights as its computationally expensive O(N^3)
 
-            self.weights = weights
-
-        except np.linalg.LinAlgError:
-            
-            print("Matrix is Singular falling back to Pseduo-inverse")
-
-            covariance_matrix = phi.T @ phi
-            weights = (np.linalg.pinv(covariance_matrix)) @ phi.T @ t_training
-
-            self.weights = weights
     
     def fitGradientDescent(self, X_training: np.ndarray, t_training:np.ndarray, learning_rate: float, epochs: int):
 
@@ -54,7 +44,7 @@ class LinearModel:
 
     def predict(self, test_input: np.ndarray):
 
-        if self.weight is None:
+        if self.weights is None:
             raise ValueError('Model is not yet fit. Fit model using .fitNormalEquation() or .fitGradientDescent()')
 
         basis = PolynomialBasis(self.basisFuncDegree)
@@ -63,10 +53,16 @@ class LinearModel:
         predictions = phi @ self.weights
 
         return predictions
+    
 
-
-
+    def ERMS(self, test_output: np.ndarray, test_input: np.ndarray):
         
-
-
-
+        predictions = self.predict(test_input)
+        
+        # Mean Squared Error
+        mse = np.mean(np.square(test_output - predictions))
+        
+        # Root Mean Squared Error
+        erms = np.sqrt(mse)
+        
+        return erms
