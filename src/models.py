@@ -12,13 +12,14 @@ class LinearModel:
         basis = PolynomialBasis(self.basisFuncDegree)
         phi = basis.transform(X_training) # This will create Design Matrix of N x M
 
+
         try:
             covariance_matrix = phi.T @ phi
             weights = (np.linalg.inv(covariance_matrix)) @ phi.T @ t_training
 
             self.weights = weights
 
-        except:
+        except np.linalg.LinAlgError:
             
             print("Matrix is Singular falling back to Pseduo-inverse")
 
@@ -49,6 +50,19 @@ class LinearModel:
             weights = weights - learning_rate*gradient
 
         self.weights = weights
+
+
+    def predict(self, test_input: np.ndarray):
+
+        if self.weight is None:
+            raise ValueError('Model is not yet fit. Fit model using .fitNormalEquation() or .fitGradientDescent()')
+
+        basis = PolynomialBasis(self.basisFuncDegree)
+        phi = basis.transform(test_input)
+
+        predictions = phi @ self.weights
+
+        return predictions
 
 
 
