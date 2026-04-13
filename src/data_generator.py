@@ -21,7 +21,7 @@ class DataGenerator:
         '''
 
         input_values = np.linspace(0, 1, self.sampleSize)    
-        true_output_values = np.sin(2*np.pi*input_values) + 0.5*np.sin(10*np.pi*input_values)
+        true_output_values = np.sin(2*np.pi*input_values) + 0.5*np.sin(10*np.pi*input_values) # THis create a column vector
 
         rng = np.random.default_rng(seed)
 
@@ -36,7 +36,7 @@ class DataGenerator:
         self.noiseoutputVector = noise_added_outputs_vector
         self.trueoutputVector = true_output_values.reshape(-1,1)
 
-        return input_values_vector, noise_added_outputs_vector
+        return input_values_vector, noise_added_outputs_vector, self.trueoutputVector
     
     def Generate_Linear_Data(self):
         pass
