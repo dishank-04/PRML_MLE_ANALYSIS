@@ -9,15 +9,16 @@ class DataGenerator:
         self.inputVector = None
         self.trueoutputVector = None
         self.noiseoutputVector = None
+        self.trainingmean = None
+        self.trainingstd = None
+        self.inputVector_std = None
+        self.noiseoutputVector_std = None
 
-    def standardizeData():
-        pass
 
-    def Generate_Non_Linear_Data(self, seed: int=None):
+    def Generate_Non_Linear_Data(self, seed: int=None, standardize_data:bool=True, return_true_outputs: bool=False):
 
-        ''' For analysis part we will be using Composite Sin function as our true function which is: sin*(2*pi*x) + 0.5*sin(10*pi*x)
-
-        This will have only 1 single Feature which is input_values
+        '''
+        Using function -> Sin(2*pi*x) + 0.5sin(10*pi*x) to generate data
         '''
 
         input_values = np.linspace(0, 1, self.sampleSize)    
@@ -28,7 +29,7 @@ class DataGenerator:
         noise = rng.normal(0, self.noise, self.sampleSize)
 
         noise_added_outputs = true_output_values + noise
-    
+
         input_values_vector = input_values.reshape(-1,1)
         noise_added_outputs_vector = noise_added_outputs.reshape(-1,1)
 
@@ -36,7 +37,56 @@ class DataGenerator:
         self.noiseoutputVector = noise_added_outputs_vector
         self.trueoutputVector = true_output_values.reshape(-1,1)
 
-        return input_values_vector, noise_added_outputs_vector, self.trueoutputVector
+        if standardize_data:
+
+            std_input, std_noiseoutput = self.standardizeData()
+
+            if return_true_outputs:
+                return std_input, std_noiseoutput, self.trueoutputVector
+            
+            return std_input, std_noiseoutput
+
+        
+        if return_true_outputs:
+            return self.inputVector, self.noiseoutputVector, self.trueoutputVector
+        
+        return self.inputVector, self.noiseoutputVector
+
+
+    def standardizeData(self):
+
+        '''This will standardize the training dataset'''
+         
+        if (self.inputVector is None) or (self.noiseoutputVector is None) or (self.trueoutputVector is None):
+            raise ValueError("Data is not yet generated. Run .Generate_Non_Linear_Data()")
+        
+        # Standardizing input values
+
+        input_mean = self.inputVector.mean(axis=0)
+        input_std = self.inputVector.std(axis=0)
+
+        if input_std == 0:
+            input_std = 1e-6
+        
+        self.inputVector_std = (self.inputVector - input_mean)/input_std
+
+
+        # Standardizing noise added output 
+
+        noise_mean = self.noiseoutputVector.mean(axis=0)
+        noise_std = self.noiseoutputVector.std(axis=0)
+
+        # Saving noise mean and noise std to use on test_dataset
+        self.trainingmean = noise_mean
+        self.trainingstd = noise_std
+
+        if noise_std == 0:
+            noise_std = 1e-6
+
+        self.noiseoutputVector_std = (self.noiseoutputVector - noise_mean)/noise_std
+
+        return self.inputVector_std, self.noiseoutputVector_std
+
     
     def Generate_Linear_Data(self):
         pass
@@ -62,25 +112,5 @@ class DataGenerator:
         plt.ylabel('t_values')
         plt.legend()
         plt.show()
-
-        
-
-
-
-
-
-
-        
-
-
-
-
-
-
-
-
-
-
-
 
 
