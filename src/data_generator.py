@@ -71,23 +71,29 @@ class DataGenerator:
         self.inputVector_std = (self.inputVector - input_mean)/input_std
 
 
-        # Standardizing noise added output 
+        # Standardizing noise addeFix the zero-check. Then, you are ready to write the Gradient Descent algorithm. Let's see the math for your polynomial basis function next.d output 
 
         noise_mean = self.noiseoutputVector.mean(axis=0)
         noise_std = self.noiseoutputVector.std(axis=0)
 
+        if noise_std == 0:
+            noise_std = 1e-6
+
         # Saving noise mean and noise std to use on test_dataset
         self.trainingmean = noise_mean
         self.trainingstd = noise_std
-
-        if noise_std == 0:
-            noise_std = 1e-6
 
         self.noiseoutputVector_std = (self.noiseoutputVector - noise_mean)/noise_std
 
         return self.inputVector_std, self.noiseoutputVector_std
 
     
+    def denormalize(self, predictions: np.ndarray):
+
+        original_predictions = (predictions * self.trainingstd) + self.trainingmean
+        return original_predictions
+
+
     def Generate_Linear_Data(self):
         pass
 
