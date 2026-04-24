@@ -9,8 +9,10 @@ class DataGenerator:
         self.inputVector = None
         self.trueoutputVector = None
         self.noiseoutputVector = None
-        self.trainingmean = None
-        self.trainingstd = None
+        self.training_noise_mean = None
+        self.training_noise_std = None
+        self.training_input_mean = None
+        self.training_input_std = None
         self.inputVector_std = None
         self.noiseoutputVector_std = None
 
@@ -67,11 +69,12 @@ class DataGenerator:
 
         if input_std == 0:
             input_std = 1e-6
+
+        self.training_input_mean = input_mean
+        self.training_input_std = input_std
         
         self.inputVector_std = (self.inputVector - input_mean)/input_std
 
-
-        # Standardizing noise addeFix the zero-check. Then, you are ready to write the Gradient Descent algorithm. Let's see the math for your polynomial basis function next.d output 
 
         noise_mean = self.noiseoutputVector.mean(axis=0)
         noise_std = self.noiseoutputVector.std(axis=0)
@@ -80,8 +83,8 @@ class DataGenerator:
             noise_std = 1e-6
 
         # Saving noise mean and noise std to use on test_dataset
-        self.trainingmean = noise_mean
-        self.trainingstd = noise_std
+        self.training_noise_mean = noise_mean
+        self.training_noise_std = noise_std
 
         self.noiseoutputVector_std = (self.noiseoutputVector - noise_mean)/noise_std
 
@@ -90,7 +93,7 @@ class DataGenerator:
     
     def denormalize(self, predictions: np.ndarray):
 
-        original_predictions = (predictions * self.trainingstd) + self.trainingmean
+        original_predictions = (predictions * self.training_noise_std) + self.training_noise_mean
         return original_predictions
 
 
